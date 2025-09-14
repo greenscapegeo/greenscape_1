@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Planting process and finished garden">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f5faf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg2)"/>
+  <g>
+    <rect x="80" y="420" width="500" height="180" rx="24" fill="#e7efe9"/>
+    <circle cx="200" cy="420" r="48" fill="#74b07d"/>
+    <rect x="680" y="140" width="520" height="460" rx="24" fill="#e7efe9"/>
+    <circle cx="940" cy="300" r="120" fill="#cfe5d4"/>
+    <circle cx="1040" cy="440" r="80" fill="#9fcea6"/>
+  </g>
+</svg>
+

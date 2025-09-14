@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Nursery showroom">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f1fbf3"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <g fill="#dcefe0">
+    <circle cx="200" cy="520" r="120"/>
+    <circle cx="420" cy="520" r="120"/>
+    <circle cx="640" cy="520" r="120"/>
+    <circle cx="860" cy="520" r="120"/>
+    <circle cx="1080" cy="520" r="120"/>
+  </g>
+  <g stroke="#2d7a32" stroke-width="8" fill="none" opacity="0.75">
+    <path d="M120,560 C180,420 260,380 320,560"/>
+    <path d="M340,560 C400,420 480,380 540,560"/>
+    <path d="M560,560 C620,420 700,380 760,560"/>
+    <path d="M780,560 C840,420 920,380 980,560"/>
+  </g>
+</svg>
+

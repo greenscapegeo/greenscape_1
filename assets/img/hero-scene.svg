@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 1600 800" role="img" aria-label="Nature horizon scene">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8f5eb"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#sky)"/>
+  <g fill="#d7ecdb">
+    <circle cx="200" cy="620" r="160"/>
+    <circle cx="520" cy="620" r="160"/>
+    <circle cx="840" cy="620" r="160"/>
+    <circle cx="1160" cy="620" r="160"/>
+    <circle cx="1480" cy="620" r="160"/>
+  </g>
+  <circle cx="1300" cy="160" r="40" fill="#fff9d9"/>
+</svg>
+
