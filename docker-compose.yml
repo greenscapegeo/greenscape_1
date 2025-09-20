@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  greenacape-frontend:
+    image: us-central1-docker.pkg.dev/PROJECT_ID/greenscape/greenscape:latest
+    container_name: greenacape-frontend
+    restart: unless-stopped
+    networks:
+      - web
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  web:
+    external: true

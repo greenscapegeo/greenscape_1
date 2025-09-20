@@ -1,0 +1,141 @@
+name: 🚀 Deploy Greenscape
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-greenscape
+  cancel-in-progress: false
+
+env:
+  APP_NAME: ${{ secrets.APP_NAME || 'greenscape' }}
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: ${{ secrets.AR_REGION || 'us-central1' }}
+  REPOSITORY: ${{ secrets.AR_REPO_NAME || 'greenscape' }}
+
+jobs:
+  deploy:
+    name: 🏗️ Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🔐 Auth to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: ☁️ Setup Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: 🐳 Configure Docker
+      run: |
+        echo "🐳 Configuring Docker for Artifact Registry..."
+        DOCKER_REGION="${{ env.REGION }}"
+        if [ -z "$DOCKER_REGION" ]; then
+          DOCKER_REGION="us-central1"
+        fi
+        echo "Docker registry: $DOCKER_REGION-docker.pkg.dev"
+        gcloud auth configure-docker $DOCKER_REGION-docker.pkg.dev --quiet
+        echo "DOCKER_REGION=$DOCKER_REGION" >> $GITHUB_ENV
+
+    - name: 📦 Fetch Environment Variables
+      run: |
+        echo "📦 Fetching environment from Secret Manager..."
+        gcloud secrets versions access latest \
+          --secret="greenscape" \
+          --project="${{ env.PROJECT_ID }}" > .env.production
+        echo "✅ Environment variables fetched from Secret Manager"
+
+    - name: 🏗️ Build & Push Docker Image
+      run: |
+        APP_NAME_LOWER=$(echo "${{ env.APP_NAME }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_PATH="${{ env.DOCKER_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/$APP_NAME_LOWER"
+
+        echo "🏗️ Building Docker image: $IMAGE_PATH"
+
+        docker build \
+          --build-arg NODE_ENV=production \
+          -t $IMAGE_PATH:${{ github.sha }} \
+          -t $IMAGE_PATH:latest \
+          .
+
+        echo "📤 Pushing images..."
+        docker push $IMAGE_PATH:${{ github.sha }}
+        docker push $IMAGE_PATH:latest
+
+        echo "IMAGE_PATH=$IMAGE_PATH" >> $GITHUB_ENV
+
+    - name: 🏗️ Setup VM Directories
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          mkdir -p ~/projects/greenacape-app
+          chown -R $USER:$USER ~/projects/greenacape-app
+
+    - name: 📤 Upload Files to VM
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        source: "docker-compose.yml"
+        target: ~/projects/greenacape-app/
+
+    - name: 📦 Create .env file on VM
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          gcloud secrets versions access latest \
+            --secret="greenscape" \
+            --project="${{ env.PROJECT_ID }}" > ~/projects/greenacape-app/.env
+          echo "✅ .env file created from Secret Manager"
+
+    - name: 🚀 Deploy Application
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          cd ~/projects/greenacape-app
+
+          # Authenticate with GCP
+          if [ -f ~/.gcp/service-account-key.json ]; then
+            gcloud auth activate-service-account --key-file=~/.gcp/service-account-key.json
+          fi
+          gcloud auth configure-docker ${{ env.DOCKER_REGION }}-docker.pkg.dev --quiet
+
+          # Ensure Docker network exists
+          docker network inspect web >/dev/null 2>&1 || docker network create web
+
+          # Update image path in compose file
+          sed -i "s|image: .*|image: ${{ env.IMAGE_PATH }}:${{ github.sha }}|g" docker-compose.yml
+
+          # Deploy
+          docker compose pull
+          docker compose up -d --force-recreate
+
+          # Ensure container is on web network
+          docker network connect web greenacape-frontend 2>/dev/null || echo "Container already on web network"
+
+    - name: 🔍 Health Check
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          sleep 15
+          curl -f -m 10 http://localhost:3000/ && echo "✅ Frontend OK" || echo "❌ Frontend FAIL"
+          docker logs greenacape-frontend --tail 20
