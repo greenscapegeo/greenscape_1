@@ -46,10 +46,20 @@ jobs:
     - name: 📦 Fetch Environment Variables
       run: |
         echo "📦 Fetching environment from Secret Manager..."
+        echo "Project: ${{ env.PROJECT_ID }}"
+        echo "Secret: greenscape"
+
         gcloud secrets versions access latest \
           --secret="greenscape" \
           --project="${{ env.PROJECT_ID }}" > .env.production
+
         echo "✅ Environment variables fetched from Secret Manager"
+        echo "📊 File size: $(wc -c < .env.production) bytes"
+        echo "📊 Line count: $(wc -l < .env.production) lines"
+        echo "🔍 First 10 variable names:"
+        head -10 .env.production | cut -d'=' -f1
+        echo "🔍 Looking for VITE_SITE_TITLE:"
+        grep "VITE_SITE_TITLE" .env.production || echo "❌ VITE_SITE_TITLE not found!"
 
     - name: 🏗️ Build & Push Docker Image
       run: |
@@ -61,9 +71,17 @@ jobs:
         # Copy .env.production to .env for the build context
         cp .env.production .env
 
-        echo "🔍 Environment variables in build:"
+        echo "🔍 Verifying .env file for Docker build:"
+        echo "📊 .env size: $(wc -c < .env) bytes"
+        echo "📊 .env lines: $(wc -l < .env) lines"
+        echo "🔍 First 5 variables in .env:"
         head -5 .env
+        echo "🔍 VITE_SITE_TITLE check:"
+        grep "VITE_SITE_TITLE" .env || echo "❌ VITE_SITE_TITLE missing in .env!"
+        echo "🔍 All VITE_ variables:"
+        grep "^VITE_" .env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
 
+        echo "🐳 Starting Docker build with .env file..."
         docker build \
           --build-arg NODE_ENV=production \
           -t $IMAGE_PATH:${{ github.sha }} \
@@ -102,10 +120,21 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
+          echo "📦 Creating .env file on VM from Secret Manager..."
           gcloud secrets versions access latest \
             --secret="greenscape" \
             --project="${{ env.PROJECT_ID }}" > ~/projects/greenacape-app/.env
+
           echo "✅ .env file created from Secret Manager"
+          echo "🔍 VM .env file verification:"
+          echo "📊 Size: $(wc -c < ~/projects/greenacape-app/.env) bytes"
+          echo "📊 Lines: $(wc -l < ~/projects/greenacape-app/.env) lines"
+          echo "🔍 First 5 variables:"
+          head -5 ~/projects/greenacape-app/.env
+          echo "🔍 VITE_SITE_TITLE check:"
+          grep "VITE_SITE_TITLE" ~/projects/greenacape-app/.env || echo "❌ VITE_SITE_TITLE missing!"
+          echo "🔍 Total VITE_ variables:"
+          grep "^VITE_" ~/projects/greenacape-app/.env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
 
     - name: 🚀 Deploy Application
       uses: appleboy/ssh-action@v1.0.3
