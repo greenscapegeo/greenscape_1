@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+## Commands!
 
 ### Development
 - `npm run dev` - Start development server on http://localhost:5173
