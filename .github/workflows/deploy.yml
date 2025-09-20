@@ -58,6 +58,12 @@ jobs:
 
         echo "🏗️ Building Docker image: $IMAGE_PATH"
 
+        # Copy .env.production to .env for the build context
+        cp .env.production .env
+
+        echo "🔍 Environment variables in build:"
+        head -5 .env
+
         docker build \
           --build-arg NODE_ENV=production \
           -t $IMAGE_PATH:${{ github.sha }} \
