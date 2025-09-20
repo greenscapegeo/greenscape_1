@@ -71,22 +71,47 @@ jobs:
         # Copy .env.production to .env for the build context
         cp .env.production .env
 
-        echo "🔍 Verifying .env file for Docker build:"
+        echo "🔍 COMPREHENSIVE .env VERIFICATION FOR DOCKER BUILD:"
         echo "📊 .env size: $(wc -c < .env) bytes"
         echo "📊 .env lines: $(wc -l < .env) lines"
-        echo "🔍 First 5 variables in .env:"
-        head -5 .env
+        echo "🔍 First 10 variables in .env:"
+        head -10 .env
         echo "🔍 VITE_SITE_TITLE check:"
         grep "VITE_SITE_TITLE" .env || echo "❌ VITE_SITE_TITLE missing in .env!"
-        echo "🔍 All VITE_ variables:"
+        echo "🔍 All VITE_ variables (first 10):"
+        grep "^VITE_" .env | head -10
+        echo "🔍 Total VITE_ variables count:"
         grep "^VITE_" .env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
 
+        echo "🔍 .env file permissions:"
+        ls -la .env
+        echo "🔍 Current working directory:"
+        pwd
+        echo "🔍 All files in current directory:"
+        ls -la
+
         echo "🐳 Starting Docker build with .env file..."
+        echo "🔍 Docker build context verification:"
+        echo "🔍 Files being copied to Docker context:"
+        find . -name ".env*" -type f -exec ls -la {} \;
+
         docker build \
           --build-arg NODE_ENV=production \
+          --progress=plain \
           -t $IMAGE_PATH:${{ github.sha }} \
           -t $IMAGE_PATH:latest \
           .
+
+        echo "🔍 POST-BUILD VERIFICATION:"
+        echo "🔍 Testing built image environment variables..."
+        docker run --rm $IMAGE_PATH:latest /bin/sh -c "
+          echo '🔍 Environment variables in built container:';
+          env | grep VITE_ | head -10 || echo '❌ No VITE_ variables found in container';
+          echo '🔍 Checking if .env file exists in container:';
+          ls -la /app/.env* 2>/dev/null || echo '❌ No .env files found in container';
+          echo '🔍 Node.js process.env check:';
+          node -e 'console.log(\"VITE_SITE_TITLE:\", process.env.VITE_SITE_TITLE || \"MISSING\")';
+        "
 
         echo "📤 Pushing images..."
         docker push $IMAGE_PATH:${{ github.sha }}
@@ -230,15 +255,21 @@ jobs:
             cp .env.production .env
           fi
 
-          echo "🔍 Final .env file verification:"
+          echo "🔍 FINAL VM .env FILE VERIFICATION:"
           echo "📊 Size: $(wc -c < .env) bytes"
           echo "📊 Lines: $(wc -l < .env) lines"
-          echo "🔍 First 5 variables:"
-          head -5 .env
+          echo "🔍 First 10 variables:"
+          head -10 .env
           echo "🔍 VITE_SITE_TITLE check:"
           grep "VITE_SITE_TITLE" .env || echo "❌ VITE_SITE_TITLE missing!"
+          echo "🔍 All VITE_ variables (first 10):"
+          grep "^VITE_" .env | head -10
           echo "🔍 Total VITE_ variables:"
           grep "^VITE_" .env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
+          echo "🔍 .env file permissions:"
+          ls -la .env
+          echo "🔍 Working directory contents:"
+          ls -la
 
     - name: 🚀 Deploy Application
       uses: appleboy/ssh-action@v1.0.3
@@ -262,8 +293,39 @@ jobs:
           sed -i "s|image: .*|image: ${{ env.IMAGE_PATH }}:${{ github.sha }}|g" docker-compose.yml
 
           # Deploy
+          echo "🚀 Pulling latest images..."
           docker compose pull
+
+          echo "🚀 Starting containers..."
           docker compose up -d --force-recreate
+
+          # Wait for container to start
+          echo "⏳ Waiting for container to start..."
+          sleep 10
+
+          # Verify container is running
+          echo "🔍 Container status:"
+          docker ps | grep greenacape-frontend || echo "❌ Container not running"
+
+          # Check container environment variables
+          echo "🔍 ENVIRONMENT VARIABLES IN RUNNING CONTAINER:"
+          docker exec greenacape-frontend /bin/sh -c "
+            echo '🔍 All environment variables:';
+            env | head -20;
+            echo '🔍 VITE_ variables:';
+            env | grep VITE_ | head -10 || echo '❌ No VITE_ variables in container environment';
+            echo '🔍 NODE_ENV:';
+            echo \$NODE_ENV;
+            echo '🔍 Files in /app:';
+            ls -la /app/ | head -10;
+            echo '🔍 .env files in container:';
+            find /app -name '.env*' -type f -exec ls -la {} \; || echo '❌ No .env files found';
+          " || echo "❌ Failed to check container environment"
+
+          # Test the application response
+          echo "🔍 Testing application response:"
+          sleep 5
+          curl -s -I http://localhost:3000/ | head -5 || echo "❌ Application not responding"
 
           # Ensure container is on web network
           docker network connect web greenacape-frontend 2>/dev/null || echo "Container already on web network"
