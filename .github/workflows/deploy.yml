@@ -121,6 +121,13 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           echo "📦 Creating .env file on VM from Secret Manager..."
+
+          # Use service account key for authentication
+          if [ -f ~/.gcp/service-account-key.json ]; then
+            echo "🔐 Using service account key for Secret Manager access"
+            gcloud auth activate-service-account --key-file=~/.gcp/service-account-key.json
+          fi
+
           gcloud secrets versions access latest \
             --secret="greenscape" \
             --project="${{ env.PROJECT_ID }}" > ~/projects/greenacape-app/.env
