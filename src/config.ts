@@ -13,7 +13,7 @@ function parseJSON<T>(raw: string, key: string): T {
   }
 }
 
-const env = import.meta.env;
+const env = (import.meta as any).env;
 
 export const config: Config = {
   siteTitle: must(env.VITE_SITE_TITLE, 'VITE_SITE_TITLE'),

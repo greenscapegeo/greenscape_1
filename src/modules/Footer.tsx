@@ -17,7 +17,7 @@ export default function Footer() {
           <h4>Contact</h4>
           <ul className="contact-list small">
             <li>{config.contactAddress}</li>
-            <li><a href={`tel:${config.contactPhone}`}>{config.contactPhone}</a></li>
+            <li><a href={`tel:${config.contactPhones[0]}`}>{config.contactPhones[0]}</a></li>
             <li><a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a></li>
             <li>{config.contactHours}</li>
           </ul>
