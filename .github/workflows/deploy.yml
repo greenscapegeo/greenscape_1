@@ -149,19 +149,42 @@ jobs:
           # Use service account key for authentication
           if [ -f ~/.gcp/service-account-key.json ]; then
             echo "🔐 Found service account key, activating..."
-            gcloud auth activate-service-account --key-file=$HOME/.gcp/service-account-key.json
-            echo "✅ Service account activated"
-            echo "🔍 Current authenticated account:"
+            echo "🔍 Service account key file details:"
+            ls -la ~/.gcp/service-account-key.json
+            echo "🔍 First 100 characters of key file:"
+            head -c 100 ~/.gcp/service-account-key.json
+            echo ""
+
+            echo "🔐 Activating service account..."
+            gcloud auth activate-service-account --key-file=$HOME/.gcp/service-account-key.json --verbosity=debug 2>&1 || echo "❌ Service account activation failed"
+
+            echo "✅ Service account activation complete"
+            echo "🔍 Current authenticated accounts:"
+            gcloud auth list --format="table(account,status)"
+            echo "🔍 Active account:"
             gcloud auth list --filter=status:ACTIVE --format="value(account)"
 
-            echo "🔐 Attempting to access Secret Manager..."
+            echo "🔍 Project configuration:"
+            echo "Project ID: ${{ env.PROJECT_ID }}"
+            gcloud config get-value project || echo "No default project set"
+
+            echo "🔐 Testing Secret Manager access with detailed logging..."
+            echo "🔍 Attempting: gcloud secrets versions access latest --secret=greenscape --project=${{ env.PROJECT_ID }}"
+
             if gcloud secrets versions access latest \
               --secret="greenscape" \
-              --project="${{ env.PROJECT_ID }}" > .env.tmp 2>&1; then
+              --project="${{ env.PROJECT_ID }}" \
+              --verbosity=debug > .env.tmp 2> secret_error.log; then
               echo "✅ Successfully fetched from Secret Manager"
+              echo "🔍 Secret Manager response size: $(wc -c < .env.tmp) bytes"
               mv .env.tmp .env
             else
-              echo "❌ Failed to access Secret Manager, using uploaded .env.production"
+              echo "❌ Failed to access Secret Manager"
+              echo "🔍 Error details:"
+              cat secret_error.log
+              echo "🔍 Service account permissions check:"
+              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="table(bindings.role,bindings.members)" --filter="bindings.members:$(gcloud auth list --filter=status:ACTIVE --format='value(account)')" || echo "Failed to check permissions"
+              echo "🔍 Using fallback .env.production file"
               cp .env.production .env
             fi
           else
