@@ -105,11 +105,52 @@ jobs:
           mkdir -p ~/.gcp
           chown -R $USER:$USER ~/projects/greenacape-app ~/.gcp
 
-    - name: 🔐 Create VM Service Account Key
+    - name: 🔐 Create Dedicated VM Service Account
       run: |
-        echo "🔐 Creating VM service account key file..."
-        echo '${{ secrets.GCP_SA_KEY }}' > vm-service-account-key.json
-        echo "✅ VM service account key file created"
+        echo "🔐 Creating dedicated VM service account for Secret Manager access..."
+
+        VM_SA_NAME="vm-secret-manager-access"
+        VM_SA_EMAIL="${VM_SA_NAME}@${{ env.PROJECT_ID }}.iam.gserviceaccount.com"
+
+        echo "🔍 Service account details:"
+        echo "Name: $VM_SA_NAME"
+        echo "Email: $VM_SA_EMAIL"
+        echo "Project: ${{ env.PROJECT_ID }}"
+
+        # Create VM service account if it doesn't exist
+        if gcloud iam service-accounts describe $VM_SA_EMAIL --project=${{ env.PROJECT_ID }} >/dev/null 2>&1; then
+          echo "✅ VM service account already exists: $VM_SA_EMAIL"
+        else
+          echo "🔧 Creating new VM service account..."
+          gcloud iam service-accounts create $VM_SA_NAME \
+            --display-name="VM Secret Manager Access" \
+            --description="Service account for VM to access Secret Manager" \
+            --project=${{ env.PROJECT_ID }}
+          echo "✅ VM service account created: $VM_SA_EMAIL"
+        fi
+
+        # Grant Secret Manager access
+        echo "🔐 Granting Secret Manager permissions..."
+        gcloud projects add-iam-policy-binding ${{ env.PROJECT_ID }} \
+          --member="serviceAccount:$VM_SA_EMAIL" \
+          --role="roles/secretmanager.secretAccessor" \
+          --quiet
+
+        # Grant Artifact Registry read access (for docker pulls)
+        echo "🐳 Granting Artifact Registry permissions..."
+        gcloud projects add-iam-policy-binding ${{ env.PROJECT_ID }} \
+          --member="serviceAccount:$VM_SA_EMAIL" \
+          --role="roles/artifactregistry.reader" \
+          --quiet
+
+        # Create service account key
+        echo "🔑 Creating service account key..."
+        gcloud iam service-accounts keys create vm-service-account-key.json \
+          --iam-account=$VM_SA_EMAIL \
+          --project=${{ env.PROJECT_ID }}
+
+        echo "✅ VM service account key created"
+        echo "📊 Key file size: $(wc -c < vm-service-account-key.json) bytes"
 
     - name: 📤 Upload Files to VM
       uses: appleboy/scp-action@v0.1.7
@@ -183,7 +224,13 @@ jobs:
               echo "🔍 Error details:"
               cat secret_error.log
               echo "🔍 Service account permissions check:"
-              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="table(bindings.role,bindings.members)" --filter="bindings.members:$(gcloud auth list --filter=status:ACTIVE --format='value(account)')" || echo "Failed to check permissions"
+              ACTIVE_ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+              echo "🔍 Active account: $ACTIVE_ACCOUNT"
+              echo "🔍 Checking permissions for: $ACTIVE_ACCOUNT"
+              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="table(bindings.role,bindings.members)" --filter="bindings.members:$ACTIVE_ACCOUNT" || echo "Failed to check permissions"
+
+              echo "🔍 Checking if account has secretmanager.secretAccessor role:"
+              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="value(bindings.role)" --filter="bindings.members:$ACTIVE_ACCOUNT AND bindings.role:roles/secretmanager.secretAccessor" | head -1 || echo "❌ No secretmanager.secretAccessor role found"
               echo "🔍 Using fallback .env.production file"
               cp .env.production .env
             fi
