@@ -149,7 +149,7 @@ jobs:
           # Use service account key for authentication
           if [ -f ~/.gcp/service-account-key.json ]; then
             echo "🔐 Found service account key, activating..."
-            gcloud auth activate-service-account --key-file=~/.gcp/service-account-key.json
+            gcloud auth activate-service-account --key-file=$HOME/.gcp/service-account-key.json
             echo "✅ Service account activated"
             echo "🔍 Current authenticated account:"
             gcloud auth list --filter=status:ACTIVE --format="value(account)"
