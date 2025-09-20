@@ -11,7 +11,7 @@ concurrency:
 
 env:
   APP_NAME: ${{ secrets.APP_NAME || 'greenscape' }}
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID || 'vernal-seeker-472512-i5' }}
   REGION: ${{ secrets.AR_REGION || 'us-central1' }}
   REPOSITORY: ${{ secrets.AR_REPO_NAME || 'greenscape' }}
 
@@ -105,51 +105,42 @@ jobs:
           mkdir -p ~/.gcp
           chown -R $USER:$USER ~/projects/greenacape-app ~/.gcp
 
-    - name: 🔐 Create Dedicated VM Service Account
+    - name: 🔐 Use Manually Created VM Service Account
       run: |
-        echo "🔐 Creating dedicated VM service account for Secret Manager access..."
+        echo "🔐 Using manually created VM service account for Secret Manager access..."
 
-        VM_SA_NAME="vm-secret-manager-access"
-        VM_SA_EMAIL="${VM_SA_NAME}@${{ env.PROJECT_ID }}.iam.gserviceaccount.com"
+        VM_SA_EMAIL="vm-secret-manager-access@vernal-seeker-472512-i5.iam.gserviceaccount.com"
 
         echo "🔍 Service account details:"
-        echo "Name: $VM_SA_NAME"
         echo "Email: $VM_SA_EMAIL"
-        echo "Project: ${{ env.PROJECT_ID }}"
+        echo "Project: vernal-seeker-472512-i5"
 
-        # Create VM service account if it doesn't exist
-        if gcloud iam service-accounts describe $VM_SA_EMAIL --project=${{ env.PROJECT_ID }} >/dev/null 2>&1; then
-          echo "✅ VM service account already exists: $VM_SA_EMAIL"
+        # Verify service account exists and has correct permissions
+        echo "🔍 Verifying service account exists..."
+        if gcloud iam service-accounts describe $VM_SA_EMAIL --project=vernal-seeker-472512-i5 >/dev/null 2>&1; then
+          echo "✅ VM service account exists: $VM_SA_EMAIL"
         else
-          echo "🔧 Creating new VM service account..."
-          gcloud iam service-accounts create $VM_SA_NAME \
-            --display-name="VM Secret Manager Access" \
-            --description="Service account for VM to access Secret Manager" \
-            --project=${{ env.PROJECT_ID }}
-          echo "✅ VM service account created: $VM_SA_EMAIL"
+          echo "❌ VM service account not found: $VM_SA_EMAIL"
+          exit 1
         fi
 
-        # Grant Secret Manager access
-        echo "🔐 Granting Secret Manager permissions..."
-        gcloud projects add-iam-policy-binding ${{ env.PROJECT_ID }} \
-          --member="serviceAccount:$VM_SA_EMAIL" \
-          --role="roles/secretmanager.secretAccessor" \
-          --quiet
+        # Check permissions
+        echo "🔍 Checking Secret Manager permissions..."
+        gcloud projects get-iam-policy vernal-seeker-472512-i5 \
+          --flatten="bindings[].members" \
+          --format="table(bindings.role)" \
+          --filter="bindings.members:serviceAccount:$VM_SA_EMAIL AND bindings.role:roles/secretmanager.secretAccessor" || echo "❌ Missing secretmanager.secretAccessor role"
 
-        # Grant Artifact Registry read access (for docker pulls)
-        echo "🐳 Granting Artifact Registry permissions..."
-        gcloud projects add-iam-policy-binding ${{ env.PROJECT_ID }} \
-          --member="serviceAccount:$VM_SA_EMAIL" \
-          --role="roles/artifactregistry.reader" \
-          --quiet
+        echo "🔍 Checking Artifact Registry permissions..."
+        gcloud projects get-iam-policy vernal-seeker-472512-i5 \
+          --flatten="bindings[].members" \
+          --format="table(bindings.role)" \
+          --filter="bindings.members:serviceAccount:$VM_SA_EMAIL AND bindings.role:roles/artifactregistry.reader" || echo "❌ Missing artifactregistry.reader role"
 
-        # Create service account key
-        echo "🔑 Creating service account key..."
-        gcloud iam service-accounts keys create vm-service-account-key.json \
-          --iam-account=$VM_SA_EMAIL \
-          --project=${{ env.PROJECT_ID }}
-
-        echo "✅ VM service account key created"
+        # Create service account key file from GitHub secret
+        echo "🔑 Creating service account key file from GitHub secret..."
+        echo '${{ secrets.VM_SA_KEY }}' > vm-service-account-key.json
+        echo "✅ VM service account key file created"
         echo "📊 Key file size: $(wc -c < vm-service-account-key.json) bytes"
 
     - name: 📤 Upload Files to VM
