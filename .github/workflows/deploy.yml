@@ -102,7 +102,14 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           mkdir -p ~/projects/greenacape-app
-          chown -R $USER:$USER ~/projects/greenacape-app
+          mkdir -p ~/.gcp
+          chown -R $USER:$USER ~/projects/greenacape-app ~/.gcp
+
+    - name: 🔐 Create VM Service Account Key
+      run: |
+        echo "🔐 Creating VM service account key file..."
+        echo '${{ secrets.GCP_SA_KEY }}' > vm-service-account-key.json
+        echo "✅ VM service account key file created"
 
     - name: 📤 Upload Files to VM
       uses: appleboy/scp-action@v0.1.7
@@ -110,8 +117,20 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
-        source: "docker-compose.yml"
+        source: "docker-compose.yml,.env.production,vm-service-account-key.json"
         target: ~/projects/greenacape-app/
+
+    - name: 🔐 Setup VM Service Account
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_SSH_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          echo "🔐 Setting up service account key on VM..."
+          mv ~/projects/greenacape-app/vm-service-account-key.json ~/.gcp/service-account-key.json
+          chmod 600 ~/.gcp/service-account-key.json
+          echo "✅ Service account key moved to ~/.gcp/"
 
     - name: 📦 Create .env file on VM
       uses: appleboy/ssh-action@v1.0.3
@@ -120,28 +139,45 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          echo "📦 Creating .env file on VM from Secret Manager..."
+          cd ~/projects/greenacape-app
+          echo "📦 Creating .env file on VM..."
+
+          # Debug: Check if service account key exists
+          echo "🔍 Checking for service account key..."
+          ls -la ~/.gcp/ || echo "❌ ~/.gcp/ directory doesn't exist"
 
           # Use service account key for authentication
           if [ -f ~/.gcp/service-account-key.json ]; then
-            echo "🔐 Using service account key for Secret Manager access"
+            echo "🔐 Found service account key, activating..."
             gcloud auth activate-service-account --key-file=~/.gcp/service-account-key.json
+            echo "✅ Service account activated"
+            echo "🔍 Current authenticated account:"
+            gcloud auth list --filter=status:ACTIVE --format="value(account)"
+
+            echo "🔐 Attempting to access Secret Manager..."
+            if gcloud secrets versions access latest \
+              --secret="greenscape" \
+              --project="${{ env.PROJECT_ID }}" > .env.tmp 2>&1; then
+              echo "✅ Successfully fetched from Secret Manager"
+              mv .env.tmp .env
+            else
+              echo "❌ Failed to access Secret Manager, using uploaded .env.production"
+              cp .env.production .env
+            fi
+          else
+            echo "❌ Service account key not found, using uploaded .env.production"
+            cp .env.production .env
           fi
 
-          gcloud secrets versions access latest \
-            --secret="greenscape" \
-            --project="${{ env.PROJECT_ID }}" > ~/projects/greenacape-app/.env
-
-          echo "✅ .env file created from Secret Manager"
-          echo "🔍 VM .env file verification:"
-          echo "📊 Size: $(wc -c < ~/projects/greenacape-app/.env) bytes"
-          echo "📊 Lines: $(wc -l < ~/projects/greenacape-app/.env) lines"
+          echo "🔍 Final .env file verification:"
+          echo "📊 Size: $(wc -c < .env) bytes"
+          echo "📊 Lines: $(wc -l < .env) lines"
           echo "🔍 First 5 variables:"
-          head -5 ~/projects/greenacape-app/.env
+          head -5 .env
           echo "🔍 VITE_SITE_TITLE check:"
-          grep "VITE_SITE_TITLE" ~/projects/greenacape-app/.env || echo "❌ VITE_SITE_TITLE missing!"
+          grep "VITE_SITE_TITLE" .env || echo "❌ VITE_SITE_TITLE missing!"
           echo "🔍 Total VITE_ variables:"
-          grep "^VITE_" ~/projects/greenacape-app/.env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
+          grep "^VITE_" .env | wc -l | xargs -I {} echo "Found {} VITE_ variables"
 
     - name: 🚀 Deploy Application
       uses: appleboy/ssh-action@v1.0.3
