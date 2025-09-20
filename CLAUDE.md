@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-### Development!
+### Development
 - `npm run dev` - Start development server on http://localhost:5173
 - `npm run build` - Build for production (outputs to `dist/`)
 - `npm run preview` - Preview production build locally
