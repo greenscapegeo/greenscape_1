@@ -18,7 +18,8 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguage] = useState<Language>('ka'); // Georgian by default
 
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    const translation = translations[language] as Record<string, string>;
+    return translation[key] || key;
   };
 
   return (
