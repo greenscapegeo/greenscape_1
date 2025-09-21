@@ -3,5 +3,6 @@ dist
 .git
 .DS_Store
 npm-debug.log*
-**/.env*
+# Allow .env files for production builds
+# **/.env*
 
