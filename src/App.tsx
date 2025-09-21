@@ -1,5 +1,6 @@
 import React from 'react';
 import { config } from './config';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './modules/Header';
 import Hero from './modules/Hero';
 import About from './modules/About';
@@ -23,13 +24,15 @@ const registry: Record<string, React.FC> = {
 
 export default function App() {
   return (
-    <div className="app" style={{ ['--brand' as any]: config.brandColor }}>
-      <LeavesBackground />
-      {config.enabledSections.map((key) => {
-        const Cmp = registry[key];
-        return Cmp ? <Cmp key={key} /> : null;
-      })}
-    </div>
+    <LanguageProvider>
+      <div className="app" style={{ ['--brand' as any]: config.brandColor }}>
+        <LeavesBackground />
+        {config.enabledSections.map((key) => {
+          const Cmp = registry[key];
+          return Cmp ? <Cmp key={key} /> : null;
+        })}
+      </div>
+    </LanguageProvider>
   );
 }
 
