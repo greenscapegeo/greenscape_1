@@ -107,7 +107,8 @@ export default function LeavesBackground() {
           ctx.rotate(leaf.rot);
 
           // Scale the image (PNG images are larger, so we scale them down)
-          const scale = leaf.r * 0.15; // Adjust this value to control leaf size
+          // Reduced by 20%: 0.15 * 0.8 = 0.12
+          const scale = leaf.r * 0.12; // 20% smaller than before
           ctx.scale(scale, scale);
 
           // Draw image centered
