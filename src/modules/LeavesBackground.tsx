@@ -2,30 +2,51 @@ import React from 'react';
 import { config } from '../config';
 
 type Leaf = {
-  x: number; y: number; vx: number; vy: number; r: number; rot: number; vr: number; path: string;
+  x: number; y: number; vx: number; vy: number; r: number; rot: number; vr: number; imageIndex: number;
 };
-
-function drawSvgPath(ctx: CanvasRenderingContext2D, path: string, color: string) {
-  const p = new Path2D(path);
-  ctx.fillStyle = color;
-  ctx.fill(p);
-}
 
 export default function LeavesBackground() {
   const ref = React.useRef<HTMLCanvasElement | null>(null);
   const mouse = React.useRef({ x: 0, y: 0 });
   const leaves = React.useRef<Leaf[]>([]);
-  const leafPaths = React.useMemo(() => {
-    // Derive one or many paths from env. Accept full <svg> or path data.
-    const toPath = (raw: string) => {
-      const dMatch = raw.trim().match(/d=\"([^\"]+)\"/);
-      return dMatch ? dMatch[1] : raw.trim();
+  const leafImages = React.useRef<HTMLImageElement[]>([]);
+  const [imagesLoaded, setImagesLoaded] = React.useState(false);
+
+  // Load PNG leaf images
+  const leafImagePaths = React.useMemo(() => [
+    '/images/leafs/leaf_1.png',
+    '/images/leafs/leaf_2.png',
+    '/images/leafs/leaf_3.png',
+    '/images/leafs/leaf_4.png',
+    '/images/leafs/leaf_5.png',
+    '/images/leafs/leaf_6.png'
+  ], []);
+
+  // Load all leaf images
+  React.useEffect(() => {
+    const images: HTMLImageElement[] = [];
+    let loadedCount = 0;
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === leafImagePaths.length) {
+        leafImages.current = images;
+        setImagesLoaded(true);
+      }
     };
-    if (config.leafSvgs && config.leafSvgs.length) return config.leafSvgs.map(toPath);
-    return [toPath(config.leafSvg)];
-  }, []);
+
+    leafImagePaths.forEach((path, index) => {
+      const img = new Image();
+      img.onload = checkAllLoaded;
+      img.onerror = checkAllLoaded; // Continue even if an image fails to load
+      img.src = path;
+      images[index] = img;
+    });
+  }, [leafImagePaths]);
 
   React.useEffect(() => {
+    if (!imagesLoaded) return;
+
     const c = ref.current!;
     const ctx = c.getContext('2d')!;
     let raf = 0;
@@ -41,16 +62,16 @@ export default function LeavesBackground() {
     const count = Math.max(0, Math.min(500, config.leafCount));
     const L: Leaf[] = [];
     for (let i = 0; i < count; i++) {
-      const path = leafPaths[Math.floor(Math.random() * leafPaths.length)];
+      const imageIndex = Math.floor(Math.random() * leafImagePaths.length);
       L.push({
         x: Math.random() * c.width,
         y: Math.random() * c.height,
         vx: (Math.random() - 0.5) * 0.3,
         vy: 0.2 + Math.random() * 0.6,
-        r: 0.4 + Math.random() * 1.4,
+        r: 0.3 + Math.random() * 0.8, // Slightly smaller scale for PNG images
         rot: Math.random() * Math.PI * 2,
         vr: (Math.random() - 0.5) * 0.01,
-        path
+        imageIndex
       });
     }
     leaves.current = L;
@@ -78,13 +99,24 @@ export default function LeavesBackground() {
         if (leaf.x > width + 50) leaf.x = -50;
         if (leaf.y > height + 50) { leaf.y = -50; leaf.x = Math.random() * width; }
 
-        // Draw
-        ctx.save();
-        ctx.translate(leaf.x, leaf.y);
-        ctx.rotate(leaf.rot);
-        ctx.scale(leaf.r, leaf.r);
-        drawSvgPath(ctx, leaf.path, config.leafColor);
-        ctx.restore();
+        // Draw PNG image
+        const leafImage = leafImages.current[leaf.imageIndex];
+        if (leafImage && leafImage.complete) {
+          ctx.save();
+          ctx.translate(leaf.x, leaf.y);
+          ctx.rotate(leaf.rot);
+
+          // Scale the image (PNG images are larger, so we scale them down)
+          const scale = leaf.r * 0.15; // Adjust this value to control leaf size
+          ctx.scale(scale, scale);
+
+          // Draw image centered
+          const imgWidth = leafImage.width;
+          const imgHeight = leafImage.height;
+          ctx.drawImage(leafImage, -imgWidth / 2, -imgHeight / 2);
+
+          ctx.restore();
+        }
       }
       ctx.restore();
       raf = requestAnimationFrame(step);
@@ -99,7 +131,7 @@ export default function LeavesBackground() {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMove);
     };
-  }, [leafPaths]);
+  }, [imagesLoaded, leafImagePaths]);
 
   return <canvas className="leaves-bg" ref={ref} aria-hidden="true" />;
 }
