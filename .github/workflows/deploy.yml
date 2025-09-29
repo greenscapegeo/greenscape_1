@@ -96,7 +96,11 @@ jobs:
         find . -name ".env*" -type f -exec ls -la {} \;
 
         docker build \
+          --no-cache \
+          --pull \
           --build-arg NODE_ENV=production \
+          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+          --build-arg BUILD_SHA=${{ github.sha }} \
           --progress=plain \
           -t $IMAGE_PATH:${{ github.sha }} \
           -t $IMAGE_PATH:latest \
@@ -292,12 +296,19 @@ jobs:
           # Update image path in compose file
           sed -i "s|image: .*|image: ${{ env.IMAGE_PATH }}:${{ github.sha }}|g" docker-compose.yml
 
+          # Clean up old containers and images
+          echo "🧹 Cleaning up old containers..."
+          docker compose down --remove-orphans || true
+
+          echo "🧹 Removing old images..."
+          docker images | grep greenscape | awk '{print $3}' | xargs -r docker rmi -f || true
+
           # Deploy
           echo "🚀 Pulling latest images..."
-          docker compose pull
+          docker compose pull --ignore-pull-failures
 
           echo "🚀 Starting containers..."
-          docker compose up -d --force-recreate
+          docker compose up -d --force-recreate --remove-orphans
 
           # Wait for container to start
           echo "⏳ Waiting for container to start..."
