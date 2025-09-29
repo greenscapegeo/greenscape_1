@@ -51,43 +51,44 @@ const translations = {
     'nav.contact': 'კონტაქტი',
 
     // Hero Section
-    'hero.mission.title': 'გრინსქეიფი არის ჩვენი მისია — ჰარმონიაში გასვლა.',
+    'hero.mission.title': 'Greenscape — ჰარმონია, რომელიც სახლიდან იწყება',
     'hero.mission.subtitle': 'სადაც ბუნება ხდება სიმშვიდისა და ბალანსის წყარო.',
     'hero.cta.learn': 'გაიგე მეტი ჩვენ შესახებ',
     'hero.cta.contact': 'დაგვიკავშირდი დღესვე',
 
     // About Section
-    'about.text': 'გრინსქეიფი შპს დაარსდა 2024 წელს, როგორც "გამცვანება 94" შპს-ისა და "ახალი გამცვანება" შპს-ის ქვეკომპანია. დამფუძნებელი კომპანიების ათწლეულების გამოცდილება ახლა კერძო სექტორში გადაიტანება.',
+    'about.text': 'შპს „გრინსქეიფი" დაარსდა 2024 წელს, როგორც შპს „გამწვანება 94"-ისა და შპს „ახალი გამწვანება"-ს შვილობილი კომპანია. დამფუძნებელი კომპანიების, ათწლეულების გამოცდილება „გრინსქეიფს" აძლევს შესაძლებლობას, კერძო სექტორს შესთავაზოს მაღალი ხარისხის სერვისები და დაამკვიდროს ახალი სტანდარტი ბაღის მოწყობისა და ლანდშაფტის დიზაინის სფეროში.',
 
     // Why Choose Us Section
-    'why.title': 'რატომ',
+    'why.title': 'რატომ გრინსქეიფი?',
     'why.experience.title': 'წლების გამოცდილება',
     'why.experience.desc': 'ათწლეულების ცოდნა და პრაქტიკა.',
-    'why.plants.title': 'კლიმატში ადაპტირებული მცენარეები',
-    'why.plants.desc': 'ხარისხიანი მცენარეები, შერჩეული ადგილობრივი პირობებისთვის.',
+    'why.plants.title': 'მცენარეების მრავალფეროვანი არჩევანი',
+    'why.plants.desc': 'ხარისხიანი და კლიმატს მორგებული მცენარეები.',
     'why.service.title': 'სრული სერვისი',
-    'why.service.desc': 'დიზაინი, მცენარეები და განხორციელება ერთ ადგილას.',
-    'why.affordable.title': 'ხელმისაწვდომი და სასარგებლო',
+    'why.service.desc': 'ლანდშაფტის დიზაინი, მცენარეების შერჩევა და შესრულება ერთ სივრცეში.',
+    'why.affordable.title': 'ხელმისაწვდომი ფასები',
     'why.affordable.desc': 'ხელმისაწვდომი ფასები და უფასო კონსულტაცია.',
 
     // Services Section
     'services.showroom.title': 'შოურუმი',
     'services.showroom.bullets.1': 'ორნამენტული მცენარეების მრავალფეროვანი არჩევანი.',
-    'services.showroom.bullets.2': 'კლიმატში ადაპტირებული მცენარეები.',
-    'services.showroom.bullets.3': 'ქოთნებსა და ძირებზე ნერგები – გადანერგვა წლის ნებისმიერ დროს.',
+    'services.showroom.bullets.2': 'კლიმატზე ადაპტირებული მცენარეები.',
+    'services.showroom.bullets.3': 'ქოთნებში გაზრდილი და დაფესვიანებული ნერგები.',
     'services.showroom.bullets.4': 'იმპორტირებული და ადგილობრივი მცენარეები.',
     'services.showroom.bullets.5': 'ხელმისაწვდომი ფასები და გარანტირებული ხარისხი.',
 
-    'services.design.title': 'ლანდშაფტური დიზაინი',
-    'services.design.text': 'ჩვენ ვქმნით ლანდშაფტურ დიზაინს, რომელიც მორგებულია თქვენს გემოვნებაზე, აბალანსებს ესთეტიკასა და ფუნქციონალობას. 3D ვიზუალიზაციით შეგიძლიათ წინასწარ ნახოთ თქვენი მომავალი ბაღი.',
+    'services.design.title': 'ლანდშაფტის დიზაინი',
+    'services.design.text': 'ჩვენ ვქმნით თქვენს გემოვნებაზე მორგებულ ლანდშაფტის დიზაინს, რომელიც ითვალისწინებს როგორც ესთეტიკას, ისე ფუნქციონალს. თანამედროვე 3D ვიზუალიზაციით შეგიძლიათ წინასწარ იხილოთ, როგორ გარდაიქმნება თქვენი სივრცე — იდეიდან დასრულებულ ბაღამდე.',
     'services.design.cta': 'გაიგეთ, როგორ იმუშავებს ჩვენი დიზაინერი თქვენს პროექტზე',
 
-    'services.planting.title': 'დარგვა და მოვლა',
-    'services.planting.checklist.1': 'ნიადაგის მომზადება და ნაყოფიერი მიწის დამატება.',
-    'services.planting.checklist.2': 'ბილიკები, კიბეები, პერგოლები, ქოთნები.',
-    'services.planting.checklist.3': 'მორწყვისა და ავტომატური მორწყვის სისტემები.',
-    'services.planting.checklist.4': 'მცენარეების დარგვა და დამაგრება.',
-    'services.planting.checklist.5': 'ბალახოვნების გაშლა და მწვანე საფარის შექმნა.',
+    'services.planting.title': 'ლანდშაფტის მოწყობა და გამწვანება',
+    'services.planting.checklist.1': 'ნიადაგის მომზადება და ნოყიერი მიწის შეტანა/გაშლა.',
+    'services.planting.checklist.2': 'მსუბუქი კონსტრუქციების მონტაჟი (ბილიკები, კიბეები, პერგოლები, ქოთნები და სხვა).',
+    'services.planting.checklist.3': 'სადრენაჟ სისტემების მოწყობა.',
+    'services.planting.checklist.4': 'ავტომატიზირებული სარწყავი სისტემების ინსტალაცია.',
+    'services.planting.checklist.5': 'მცენარეების დარგვა და გამაგრებითი სამუშაოები.',
+    'services.planting.checklist.6': 'ბალახის დაგება და მწვანე საფარის მოწყობა.',
 
     // Contact Section
     'contact.title': 'კონტაქტი',
@@ -133,43 +134,44 @@ const translations = {
     'nav.contact': 'Contact',
 
     // Hero Section
-    'hero.mission.title': 'Greenscape is our mission — an escape into harmony.',
+    'hero.mission.title': 'Greenscape — Harmony Begins at Home.',
     'hero.mission.subtitle': 'Where nature becomes a source of calm and balance.',
     'hero.cta.learn': 'Learn More About Us',
     'hero.cta.contact': 'Contact Us Today',
 
     // About Section
-    'about.text': 'Greenscape LLC was founded in 2024 as a subsidiary of Gamzvaneba 94 LLC and Akhali Gamzvaneba LLC. The decades of experience from the founding companies are now being transferred to the private sector.',
+    'about.text': 'LLC "Greenscape" was founded in 2024 as a subsidiary of LLC "Gamtsvaneba 94" and LLC "Akhali Gamtsvaneba". The decades of experience of its founding companies enables "Greenscape" to offer the private sector high-quality services and to establish a new standard in garden development and landscape design.',
 
     // Why Choose Us Section
-    'why.title': 'Why',
+    'why.title': 'Why Greenscape?',
     'why.experience.title': 'Years of Experience',
     'why.experience.desc': 'Decades of knowledge and practice.',
-    'why.plants.title': 'Climate-Adapted Plants',
-    'why.plants.desc': 'Quality plants selected for local conditions.',
-    'why.service.title': 'Full Service Cycle',
-    'why.service.desc': 'Design, plants, and execution in one place.',
-    'why.affordable.title': 'Affordable & Helpful',
-    'why.affordable.desc': 'Affordable prices and free consultation.',
+    'why.plants.title': 'Wide Variety of Plants',
+    'why.plants.desc': 'High-quality, climate-adapted plants.',
+    'why.service.title': 'Full Service',
+    'why.service.desc': 'Landscape design, plant selection, and implementation all in one place.',
+    'why.affordable.title': 'Affordable Prices',
+    'why.affordable.desc': 'Competitive prices and free consultation.',
 
     // Services Section
     'services.showroom.title': 'Showroom',
-    'services.showroom.bullets.1': 'Diverse selection of ornamental plants.',
-    'services.showroom.bullets.2': 'Climate-adapted plants.',
-    'services.showroom.bullets.3': 'Potted and rooted seedlings – transplant any time of year.',
-    'services.showroom.bullets.4': 'Imported and local plants.',
+    'services.showroom.bullets.1': 'A wide selection of ornamental plants.',
+    'services.showroom.bullets.2': 'Climate-adapted varieties.',
+    'services.showroom.bullets.3': 'Potted and well-rooted seedlings.',
+    'services.showroom.bullets.4': 'Imported and locally grown plants.',
     'services.showroom.bullets.5': 'Affordable prices and guaranteed quality.',
 
     'services.design.title': 'Landscape Design',
-    'services.design.text': 'We create landscape designs tailored to your taste, balancing aesthetics and function. With 3D visualization, you can see your future garden in advance.',
+    'services.design.text': 'We create landscape designs tailored to your taste, taking into account both aesthetics and functionality. With modern 3D visualization, you can preview how your space will transform — from concept to a completed garden.',
     'services.design.cta': 'Find Out How Our Designer Will Work on Your Project',
 
-    'services.planting.title': 'Planting & Care',
-    'services.planting.checklist.1': 'Soil preparation and addition of fertile earth.',
-    'services.planting.checklist.2': 'Paths, stairs, pergolas, pots.',
-    'services.planting.checklist.3': 'Irrigation and automated watering systems.',
-    'services.planting.checklist.4': 'Planting and securing plants.',
-    'services.planting.checklist.5': 'Laying sod and creating green cover.',
+    'services.planting.title': 'Landscaping Services',
+    'services.planting.checklist.1': 'Soil preparation and application.',
+    'services.planting.checklist.2': 'Installation of light constructions (pathways, stairs, pergolas, pots, and more).',
+    'services.planting.checklist.3': 'Drainage system installation.',
+    'services.planting.checklist.4': 'Automated irrigation system installation.',
+    'services.planting.checklist.5': 'Planting and reinforcement works.',
+    'services.planting.checklist.6': 'Lawn arrangement.',
 
     // Contact Section
     'contact.title': 'Contact',

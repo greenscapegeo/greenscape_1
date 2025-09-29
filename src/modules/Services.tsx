@@ -58,7 +58,8 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
     t('services.planting.checklist.2'),
     t('services.planting.checklist.3'),
     t('services.planting.checklist.4'),
-    t('services.planting.checklist.5')
+    t('services.planting.checklist.5'),
+    t('services.planting.checklist.6')
   ];
 
   return (
