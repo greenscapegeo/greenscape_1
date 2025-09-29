@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  greenacape-frontend:
+  greenscape-frontend:
     image: us-central1-docker.pkg.dev/PROJECT_ID/greenscape/greenscape:latest
-    container_name: greenacape-frontend
+    container_name: greenscape-frontend
     restart: unless-stopped
     networks:
       - web
