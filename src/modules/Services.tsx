@@ -6,6 +6,14 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
   const { t } = useLanguage();
 
   if (variant === 'showroom') {
+    const showroomBullets = [
+      t('services.showroom.bullets.1'),
+      t('services.showroom.bullets.2'),
+      t('services.showroom.bullets.3'),
+      t('services.showroom.bullets.4'),
+      t('services.showroom.bullets.5')
+    ];
+
     return (
       <section id="services" className="section services">
         <div className="container">
@@ -14,7 +22,7 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
             <div className="service-text">
               <h3>{t('brand.name')} {t('services.showroom.title')}</h3>
               <ul className="bullets">
-                {config.showroomBullets.map((b, i) => <li key={i}>{b}</li>)}
+                {showroomBullets.map((b, i) => <li key={i}>{b}</li>)}
               </ul>
               <a className="btn link" href="#catalog" aria-label="View all plants">View All Plants</a>
             </div>
@@ -35,8 +43,8 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
             <div className="overlay-bg" style={{ backgroundImage: `linear-gradient(rgba(45,122,50,0.15), rgba(45,122,50,0.15)), url('${config.designBgUrl}')` }} aria-hidden="true" />
             <div className="overlay-content">
               <h3>{t('services.design.title')}</h3>
-              <p>{config.designText}</p>
-              <a className="btn primary" href="#contact">{config.designCtaText}</a>
+              <p>{t('services.design.text')}</p>
+              <a className="btn primary" href="#contact">{t('services.design.cta')}</a>
             </div>
           </div>
         </div>
@@ -44,7 +52,15 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
     );
   }
 
-  // planting
+  const plantingChecklist = [
+    t('services.planting.checklist.1'),
+    t('services.planting.checklist.2'),
+    t('services.planting.checklist.3'),
+    t('services.planting.checklist.4'),
+    t('services.planting.checklist.5'),
+    t('services.planting.checklist.6')
+  ];
+
   return (
     <section className="section services">
       <div className="container">
@@ -55,7 +71,7 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
           <div className="service-text">
             <h3>{t('services.planting.title')}</h3>
             <ul className="checklist">
-              {config.plantingChecklist.map((c, i) => <li key={i}>{c}</li>)}
+              {plantingChecklist.map((c, i) => <li key={i}>{c}</li>)}
             </ul>
           </div>
         </div>

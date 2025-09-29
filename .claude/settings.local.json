@@ -9,7 +9,8 @@
       "Bash(pip install:*)",
       "Bash(npm run dev:*)",
       "Bash(ssh-keygen:*)",
-      "Read(//c/Users/Admin/**)"
+      "Read(//c/Users/Admin/**)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
