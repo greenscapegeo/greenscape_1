@@ -130,9 +130,9 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          mkdir -p ~/projects/greenscape-app
+          mkdir -p ~/projects/greenacape-app
           mkdir -p ~/.gcp
-          chown -R $USER:$USER ~/projects/greenscape-app ~/.gcp
+          chown -R $USER:$USER ~/projects/greenacape-app ~/.gcp
 
     - name: 🔐 Use Manually Created VM Service Account
       run: |
@@ -179,7 +179,7 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         source: "docker-compose.yml,.env.production,vm-service-account-key.json"
-        target: ~/projects/greenscape-app/
+        target: ~/projects/greenacape-app/
 
     - name: 🔐 Setup VM Service Account
       uses: appleboy/ssh-action@v1.0.3
@@ -189,7 +189,7 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           echo "🔐 Setting up service account key on VM..."
-          mv ~/projects/greenscape-app/vm-service-account-key.json ~/.gcp/service-account-key.json
+          mv ~/projects/greenacape-app/vm-service-account-key.json ~/.gcp/service-account-key.json
           chmod 600 ~/.gcp/service-account-key.json
           echo "✅ Service account key moved to ~/.gcp/"
 
@@ -200,7 +200,7 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          cd ~/projects/greenscape-app
+          cd ~/projects/greenacape-app
           echo "📦 Creating .env file on VM..."
 
           # Debug: Check if service account key exists
@@ -282,7 +282,7 @@ jobs:
         username: ${{ secrets.VM_SSH_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          cd ~/projects/greenscape-app
+          cd ~/projects/greenacape-app
 
           # Authenticate with GCP
           if [ -f ~/.gcp/service-account-key.json ]; then
@@ -316,11 +316,11 @@ jobs:
 
           # Verify container is running
           echo "🔍 Container status:"
-          docker ps | grep greenscape-frontend || echo "❌ Container not running"
+          docker ps | grep greenacape-frontend || echo "❌ Container not running"
 
           # Check container environment variables
           echo "🔍 ENVIRONMENT VARIABLES IN RUNNING CONTAINER:"
-          docker exec greenscape-frontend /bin/sh -c "
+          docker exec greenacape-frontend /bin/sh -c "
             echo '🔍 All environment variables:';
             env | head -20;
             echo '🔍 VITE_ variables:';
@@ -339,7 +339,7 @@ jobs:
           curl -s -I http://localhost:3000/ | head -5 || echo "❌ Application not responding"
 
           # Ensure container is on web network
-          docker network connect web greenscape-frontend 2>/dev/null || echo "Container already on web network"
+          docker network connect web greenacape-frontend 2>/dev/null || echo "Container already on web network"
 
     - name: 🔍 Health Check
       uses: appleboy/ssh-action@v1.0.3
@@ -350,4 +350,4 @@ jobs:
         script: |
           sleep 15
           curl -f -m 10 http://localhost:3000/ && echo "✅ Frontend OK" || echo "❌ Frontend FAIL"
-          docker logs greenscape-frontend --tail 20
+          docker logs greenacape-frontend --tail 20
