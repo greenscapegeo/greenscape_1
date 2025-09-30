@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { config } from '../config';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Gallery() {
+  const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
@@ -12,8 +14,8 @@ export default function Gallery() {
   return (
     <section id="gallery" className="section gallery-section">
       <div className="container">
-        <h2 className="section-title">Our Projects</h2>
-        <p className="section-subtitle">Explore our completed landscape and garden projects</p>
+        <h2 className="section-title">{t('gallery.title')}</h2>
+        <p className="section-subtitle">{t('gallery.subtitle')}</p>
 
         {!selectedProject ? (
           <div className="gallery-grid">
@@ -31,7 +33,7 @@ export default function Gallery() {
                   />
                   <div className="project-overlay">
                     <h3>{project.name}</h3>
-                    <p>{project.imageCount} photos</p>
+                    <p>{project.imageCount} {t('gallery.photos')}</p>
                   </div>
                 </div>
               </div>
@@ -43,7 +45,7 @@ export default function Gallery() {
               className="back-button"
               onClick={() => setSelectedProject(null)}
             >
-              ← Back to Projects
+              {t('gallery.back')}
             </button>
             <h3 className="project-name">{currentProject?.name}</h3>
             <div className="project-images-grid">

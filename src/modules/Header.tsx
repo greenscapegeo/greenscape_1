@@ -26,6 +26,7 @@ export default function Header() {
         <nav id="primary-nav" className={"primary-nav" + (open ? " open" : "")} aria-label="Primary">
           <a href="#about">{t('nav.about')}</a>
           <a href="#services">{t('nav.services')}</a>
+          <a href="#gallery">{t('nav.projects')}</a>
           <a href="#contact">{t('nav.contact')}</a>
           <a className="btn cta" href="#contact">{t('hero.cta.contact')}</a>
           <LanguageSwitcher />

@@ -48,6 +48,7 @@ const translations = {
     // Navigation
     'nav.about': 'ჩვენს შესახებ',
     'nav.services': 'სერვისები',
+    'nav.projects': 'პროექტები',
     'nav.contact': 'კონტაქტი',
 
     // Hero Section
@@ -118,6 +119,12 @@ const translations = {
     'footer.explore': 'გამოიკვლიეთ',
     'footer.rights': 'ყველა უფლება დაცულია.',
 
+    // Gallery Section
+    'gallery.title': 'ჩვენი პროექტები',
+    'gallery.subtitle': 'გაეცანით ჩვენს შესრულებულ ლანდშაფტურ და ბაღის პროექტებს',
+    'gallery.photos': 'ფოტო',
+    'gallery.back': '← დაბრუნება პროექტებზე',
+
     // Language Switcher
     'language.georgian': 'ქართული',
     'language.english': 'English',
@@ -131,6 +138,7 @@ const translations = {
     // Navigation
     'nav.about': 'About',
     'nav.services': 'Services',
+    'nav.projects': 'Projects',
     'nav.contact': 'Contact',
 
     // Hero Section
@@ -200,6 +208,12 @@ const translations = {
     'footer.tagline': 'Garden Center & Landscape Design',
     'footer.explore': 'Explore',
     'footer.rights': 'All rights reserved.',
+
+    // Gallery Section
+    'gallery.title': 'Our Projects',
+    'gallery.subtitle': 'Explore our completed landscape and garden projects',
+    'gallery.photos': 'photos',
+    'gallery.back': '← Back to Projects',
 
     // Language Switcher
     'language.georgian': 'ქართული',
