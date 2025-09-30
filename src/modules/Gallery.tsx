@@ -28,11 +28,11 @@ export default function Gallery() {
                 <div className="project-thumbnail">
                   <img
                     src={`/images/gallery/${project.folder}/1.png`}
-                    alt={project.name}
+                    alt={t(`gallery.project.${project.folder}`)}
                     loading="lazy"
                   />
                   <div className="project-overlay">
-                    <h3>{project.name}</h3>
+                    <h3>{t(`gallery.project.${project.folder}`)}</h3>
                     <p>{project.imageCount} {t('gallery.photos')}</p>
                   </div>
                 </div>
@@ -47,7 +47,7 @@ export default function Gallery() {
             >
               {t('gallery.back')}
             </button>
-            <h3 className="project-name">{currentProject?.name}</h3>
+            <h3 className="project-name">{currentProject ? t(`gallery.project.${currentProject.folder}`) : ''}</h3>
             <div className="project-images-grid">
               {Array.from({ length: currentProject?.imageCount || 0 }, (_, i) => (
                 <div
@@ -57,7 +57,7 @@ export default function Gallery() {
                 >
                   <img
                     src={`/images/gallery/${selectedProject}/${i + 1}.png`}
-                    alt={`${currentProject?.name} - Image ${i + 1}`}
+                    alt={`${currentProject ? t(`gallery.project.${currentProject.folder}`) : ''} - Image ${i + 1}`}
                     loading="lazy"
                   />
                 </div>

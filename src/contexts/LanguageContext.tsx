@@ -124,6 +124,10 @@ const translations = {
     'gallery.subtitle': 'გაეცანით ჩვენს შესრულებულ ლანდშაფტურ და ბაღის პროექტებს',
     'gallery.photos': 'ფოტო',
     'gallery.back': '← დაბრუნება პროექტებზე',
+    'gallery.project.kiketi': 'კიკეთი',
+    'gallery.project.lisi': 'ლისი',
+    'gallery.project.saguramo': 'საგურამო',
+    'gallery.project.shindisi': 'შინდისი',
 
     // Language Switcher
     'language.georgian': 'ქართული',
@@ -214,6 +218,10 @@ const translations = {
     'gallery.subtitle': 'Explore our completed landscape and garden projects',
     'gallery.photos': 'photos',
     'gallery.back': '← Back to Projects',
+    'gallery.project.kiketi': 'Kiketi',
+    'gallery.project.lisi': 'Lisi',
+    'gallery.project.saguramo': 'Saguramo',
+    'gallery.project.shindisi': 'Shindisi',
 
     // Language Switcher
     'language.georgian': 'ქართული',
