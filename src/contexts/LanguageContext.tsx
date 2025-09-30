@@ -112,7 +112,7 @@ const translations = {
     // Social Labels
     'social.facebook': 'ფეისბუქი',
     'social.instagram': 'ინსტაგრამი',
-    'social.tiktok': 'ტიქტოქი',
+    'social.tiktok': 'ტიკტოკი',
 
     // Footer
     'footer.tagline': 'ბაღის ცენტრი და ლანდშაფტური დიზაინი',
