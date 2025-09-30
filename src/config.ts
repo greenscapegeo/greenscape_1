@@ -69,5 +69,7 @@ export const config: Config = {
   georgianFontUrlWoff2: env.VITE_FONT_GEORGIAN_URL_WOFF2 as string | undefined,
   georgianFontUrl: env.VITE_FONT_GEORGIAN_URL as string | undefined,
   georgianFontWeight: (env.VITE_FONT_GEORGIAN_WEIGHT as string | undefined) ?? '400',
-  georgianFontStyle: (env.VITE_FONT_GEORGIAN_STYLE as string | undefined) ?? 'normal'
+  georgianFontStyle: (env.VITE_FONT_GEORGIAN_STYLE as string | undefined) ?? 'normal',
+
+  galleryProjects: parseJSON(must(env.VITE_GALLERY_PROJECTS, 'VITE_GALLERY_PROJECTS'), 'VITE_GALLERY_PROJECTS')
 };

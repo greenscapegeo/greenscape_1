@@ -1,5 +1,6 @@
 export type WhyItem = { icon: string; title: string; desc: string };
 export type SocialItem = { label: string; url: string; icon?: string };
+export type GalleryProject = { name: string; folder: string; imageCount: number };
 
 export type Config = {
   siteTitle: string;
@@ -57,4 +58,6 @@ export type Config = {
   georgianFontStyle?: string;
 
   heroSubtitleColor: string;
+
+  galleryProjects: GalleryProject[];
 };

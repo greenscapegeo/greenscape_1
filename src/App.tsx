@@ -6,6 +6,7 @@ import Hero from './modules/Hero';
 import About from './modules/About';
 import Why from './modules/Why';
 import Services from './modules/Services';
+import Gallery from './modules/Gallery';
 import Contact from './modules/Contact';
 import Footer from './modules/Footer';
 import LeavesBackground from './modules/LeavesBackground';
@@ -18,6 +19,7 @@ const registry: Record<string, React.FC> = {
   'Services.Showroom': () => <Services variant="showroom" />,
   'Services.Design': () => <Services variant="design" />,
   'Services.Planting': () => <Services variant="planting" />,
+  Gallery,
   Contact,
   Footer
 };

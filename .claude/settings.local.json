@@ -10,7 +10,10 @@
       "Bash(npm run dev:*)",
       "Bash(ssh-keygen:*)",
       "Read(//c/Users/Admin/**)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(for dir in public/images/gallery/*/)",
+      "Bash(ls:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
