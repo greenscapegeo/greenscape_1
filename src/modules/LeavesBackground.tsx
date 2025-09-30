@@ -89,6 +89,19 @@ export default function LeavesBackground() {
         leaf.vx += dx * strength * 0.02;
         leaf.vy += dy * strength * 0.02;
 
+        // Apply damping to prevent acceleration (keep speed constant)
+        const damping = 0.95;
+        leaf.vx *= damping;
+        leaf.vy *= damping;
+
+        // Clamp maximum speed
+        const maxSpeed = 3;
+        const speed = Math.hypot(leaf.vx, leaf.vy);
+        if (speed > maxSpeed) {
+          leaf.vx = (leaf.vx / speed) * maxSpeed;
+          leaf.vy = (leaf.vy / speed) * maxSpeed;
+        }
+
         // Integrate
         leaf.x += leaf.vx;
         leaf.y += leaf.vy;
