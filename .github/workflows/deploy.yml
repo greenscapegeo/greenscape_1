@@ -43,23 +43,24 @@ jobs:
         gcloud auth configure-docker $DOCKER_REGION-docker.pkg.dev --quiet
         echo "DOCKER_REGION=$DOCKER_REGION" >> $GITHUB_ENV
 
-    - name: 📦 Fetch Environment Variables
+    - name: 📦 Prepare Environment Variables
       run: |
-        echo "📦 Fetching environment from Secret Manager..."
-        echo "Project: ${{ env.PROJECT_ID }}"
-        echo "Secret: greenscape"
+        echo "📦 Using local .env file for deployment..."
 
-        gcloud secrets versions access latest \
-          --secret="greenscape" \
-          --project="${{ env.PROJECT_ID }}" > .env.production
+        # Copy local .env to .env.production
+        cp .env .env.production
 
-        echo "✅ Environment variables fetched from Secret Manager"
+        echo "✅ Environment variables prepared from local .env"
         echo "📊 File size: $(wc -c < .env.production) bytes"
         echo "📊 Line count: $(wc -l < .env.production) lines"
         echo "🔍 First 10 variable names:"
         head -10 .env.production | cut -d'=' -f1
         echo "🔍 Looking for VITE_SITE_TITLE:"
         grep "VITE_SITE_TITLE" .env.production || echo "❌ VITE_SITE_TITLE not found!"
+        echo "🔍 Looking for VITE_SHOWROOM_MEDIA_URL:"
+        grep "VITE_SHOWROOM_MEDIA_URL" .env.production || echo "❌ VITE_SHOWROOM_MEDIA_URL not found!"
+        echo "🔍 Looking for VITE_MAPS_EMBED_URL:"
+        grep "VITE_MAPS_EMBED_URL" .env.production || echo "❌ VITE_MAPS_EMBED_URL not found!"
 
     - name: 🏗️ Build & Push Docker Image
       run: |
@@ -201,63 +202,10 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           cd ~/projects/greenacape-app
-          echo "📦 Creating .env file on VM..."
+          echo "📦 Creating .env file on VM from uploaded .env.production..."
 
-          # Debug: Check if service account key exists
-          echo "🔍 Checking for service account key..."
-          ls -la ~/.gcp/ || echo "❌ ~/.gcp/ directory doesn't exist"
-
-          # Use service account key for authentication
-          if [ -f ~/.gcp/service-account-key.json ]; then
-            echo "🔐 Found service account key, activating..."
-            echo "🔍 Service account key file details:"
-            ls -la ~/.gcp/service-account-key.json
-            echo "🔍 First 100 characters of key file:"
-            head -c 100 ~/.gcp/service-account-key.json
-            echo ""
-
-            echo "🔐 Activating service account..."
-            gcloud auth activate-service-account --key-file=$HOME/.gcp/service-account-key.json --verbosity=debug 2>&1 || echo "❌ Service account activation failed"
-
-            echo "✅ Service account activation complete"
-            echo "🔍 Current authenticated accounts:"
-            gcloud auth list --format="table(account,status)"
-            echo "🔍 Active account:"
-            gcloud auth list --filter=status:ACTIVE --format="value(account)"
-
-            echo "🔍 Project configuration:"
-            echo "Project ID: ${{ env.PROJECT_ID }}"
-            gcloud config get-value project || echo "No default project set"
-
-            echo "🔐 Testing Secret Manager access with detailed logging..."
-            echo "🔍 Attempting: gcloud secrets versions access latest --secret=greenscape --project=${{ env.PROJECT_ID }}"
-
-            if gcloud secrets versions access latest \
-              --secret="greenscape" \
-              --project="${{ env.PROJECT_ID }}" \
-              --verbosity=debug > .env.tmp 2> secret_error.log; then
-              echo "✅ Successfully fetched from Secret Manager"
-              echo "🔍 Secret Manager response size: $(wc -c < .env.tmp) bytes"
-              mv .env.tmp .env
-            else
-              echo "❌ Failed to access Secret Manager"
-              echo "🔍 Error details:"
-              cat secret_error.log
-              echo "🔍 Service account permissions check:"
-              ACTIVE_ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format='value(account)')
-              echo "🔍 Active account: $ACTIVE_ACCOUNT"
-              echo "🔍 Checking permissions for: $ACTIVE_ACCOUNT"
-              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="table(bindings.role,bindings.members)" --filter="bindings.members:$ACTIVE_ACCOUNT" || echo "Failed to check permissions"
-
-              echo "🔍 Checking if account has secretmanager.secretAccessor role:"
-              gcloud projects get-iam-policy ${{ env.PROJECT_ID }} --flatten="bindings[].members" --format="value(bindings.role)" --filter="bindings.members:$ACTIVE_ACCOUNT AND bindings.role:roles/secretmanager.secretAccessor" | head -1 || echo "❌ No secretmanager.secretAccessor role found"
-              echo "🔍 Using fallback .env.production file"
-              cp .env.production .env
-            fi
-          else
-            echo "❌ Service account key not found, using uploaded .env.production"
-            cp .env.production .env
-          fi
+          # Use the uploaded .env.production file directly
+          cp .env.production .env
 
           echo "🔍 FINAL VM .env FILE VERIFICATION:"
           echo "📊 Size: $(wc -c < .env) bytes"
@@ -266,6 +214,10 @@ jobs:
           head -10 .env
           echo "🔍 VITE_SITE_TITLE check:"
           grep "VITE_SITE_TITLE" .env || echo "❌ VITE_SITE_TITLE missing!"
+          echo "🔍 VITE_SHOWROOM_MEDIA_URL check:"
+          grep "VITE_SHOWROOM_MEDIA_URL" .env || echo "❌ VITE_SHOWROOM_MEDIA_URL missing!"
+          echo "🔍 VITE_MAPS_EMBED_URL check:"
+          grep "VITE_MAPS_EMBED_URL" .env || echo "❌ VITE_MAPS_EMBED_URL missing!"
           echo "🔍 All VITE_ variables (first 10):"
           grep "^VITE_" .env | head -10
           echo "🔍 Total VITE_ variables:"
