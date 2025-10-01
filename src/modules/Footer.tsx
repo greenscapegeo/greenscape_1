@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="brand-col">
           <a href="#" className="brand">
-            <span className="brand-mark" aria-hidden="true">{config.brandEmoji}</span>
+            <img src="/images/logos/newlogo.jpg" alt="" className="brand-mark" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
             <span className="brand-text">{t('brand.name')}</span>
           </a>
           <p>{t('footer.tagline')}</p>
