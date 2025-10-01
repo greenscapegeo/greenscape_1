@@ -13,7 +13,8 @@
       "Bash(cat:*)",
       "Bash(for dir in public/images/gallery/*/)",
       "Bash(ls:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
