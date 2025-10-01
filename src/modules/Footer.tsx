@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container footer-grid">
         <div className="brand-col">
           <a href="#" className="brand">
-            <img src="/images/logos/newlogo.jpg" alt="" className="brand-mark" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+            <img src="/images/logos/greenscape_logo_1.png" alt="" className="brand-mark" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
             <span className="brand-text">{t('brand.name')}</span>
           </a>
           <p>{t('footer.tagline')}</p>
