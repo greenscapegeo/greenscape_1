@@ -41,8 +41,8 @@ export function useLanguage() {
 const translations = {
   ka: {
     // Site Meta
-    'site.title': 'გრინსქეიფი – ბაღის ცენტრი და ლანდშაფტური დიზაინი',
-    'site.description': 'გრინსქეიფი: ბაღის ცენტრი, ლანდშაფტური დიზაინი, დარგვა და სრული სერვისი ბაღის მოვლისთვის.',
+    'site.title': 'გრინსქეიფი – ლანდშაფტის დიზაინი და სანერგე შოურუმი',
+    'site.description': 'გრინსქეიფი: ლანდშაფტის დიზაინი, დარგვა და სრული სერვისი ბაღის მოვლისთვის.',
     'brand.name': 'გრინსქეიფი',
 
     // Navigation
@@ -115,7 +115,7 @@ const translations = {
     'social.tiktok': 'ტიკტოკი',
 
     // Footer
-    'footer.tagline': 'ბაღის ცენტრი და ლანდშაფტური დიზაინი',
+    'footer.tagline': 'სანერგე შოურუმი და ლანდშაფტის დიზაინი',
     'footer.explore': 'გამოიკვლიეთ',
     'footer.rights': 'ყველა უფლება დაცულია.',
 
