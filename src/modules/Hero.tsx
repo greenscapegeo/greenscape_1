@@ -11,7 +11,6 @@ export default function Hero() {
       <div className="hero-bg" style={{ backgroundImage: `url('${bg}')` }} aria-hidden="true" />
       <div className="container hero-content">
         <h1>{t('hero.mission.title')}</h1>
-        <p style={{ color: config.heroSubtitleColor }}>{t('hero.mission.subtitle')}</p>
         <div className="actions">
           <a className="btn primary" href="#about">{t('hero.cta.learn')}</a>
           <a className="btn ghost" href="#contact">{t('hero.cta.contact')}</a>

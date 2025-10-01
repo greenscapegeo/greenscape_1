@@ -24,7 +24,7 @@ export default function Services({ variant }: { variant: 'showroom' | 'design' |
               <ul className="bullets">
                 {showroomBullets.map((b, i) => <li key={i}>{b}</li>)}
               </ul>
-              <a className="btn link" href="#catalog" aria-label="View all plants">View All Plants</a>
+              <a className="btn link" href="/images/catalogue/კატალოგი.pdf" download aria-label={t('services.showroom.catalogue')}>{t('services.showroom.catalogue')}</a>
             </div>
             <div className="service-media">
               <img src={config.showroomMediaUrl} alt="Nursery showroom" />

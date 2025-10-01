@@ -28,6 +28,7 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
 .site-header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,0.85); backdrop-filter: saturate(150%) blur(8px); border-bottom: 1px solid #e7ece8; }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
 .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--dark); text-decoration: none; }
+.brand-logo { height: 36px; width: auto; display: block; object-fit: contain; }
 .brand-mark { font-size: 20px; }
 .brand-text { letter-spacing: 0.2px; }
 .primary-nav { display: flex; align-items: center; gap: 16px; }

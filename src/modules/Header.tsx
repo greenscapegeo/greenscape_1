@@ -1,5 +1,4 @@
 import React from 'react';
-import { config } from '../config';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
@@ -11,7 +10,11 @@ export default function Header() {
     <header className="site-header">
       <div className="container nav">
         <a href="#" className="brand" aria-label={`${t('brand.name')} home`}>
-          <span className="brand-mark" aria-hidden="true">{config.brandEmoji}</span>
+          <img
+            className="brand-logo"
+            src="/images/logos/greenscape_logo_1.png"
+            alt={`${t('brand.name')} logo`}
+          />
           <span className="brand-text">{t('brand.name')}</span>
         </a>
         <button

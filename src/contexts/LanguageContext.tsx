@@ -52,8 +52,7 @@ const translations = {
     'nav.contact': 'კონტაქტი',
 
     // Hero Section
-    'hero.mission.title': 'Greenscape — ჰარმონია, რომელიც სახლიდან იწყება',
-    'hero.mission.subtitle': 'სადაც ბუნება ხდება სიმშვიდისა და ბალანსის წყარო.',
+    'hero.mission.title': 'გრინსქეიფი - ბუნებასთან ჰარმონიაში',
     'hero.cta.learn': 'გაიგე მეტი ჩვენ შესახებ',
     'hero.cta.contact': 'დაგვიკავშირდი დღესვე',
 
@@ -78,6 +77,7 @@ const translations = {
     'services.showroom.bullets.3': 'ქოთნებში გაზრდილი და დაფესვიანებული ნერგები.',
     'services.showroom.bullets.4': 'იმპორტირებული და ადგილობრივი მცენარეები.',
     'services.showroom.bullets.5': 'ხელმისაწვდომი ფასები და გარანტირებული ხარისხი.',
+    'services.showroom.catalogue': 'კატალოგი',
 
     'services.design.title': 'ლანდშაფტის დიზაინი',
     'services.design.text': 'ჩვენ ვქმნით თქვენს გემოვნებაზე მორგებულ ლანდშაფტის დიზაინს, რომელიც ითვალისწინებს როგორც ესთეტიკას, ისე ფუნქციონალს. თანამედროვე 3D ვიზუალიზაციით შეგიძლიათ წინასწარ იხილოთ, როგორ გარდაიქმნება თქვენი სივრცე — იდეიდან დასრულებულ ბაღამდე.',
@@ -86,7 +86,7 @@ const translations = {
     'services.planting.title': 'ლანდშაფტის მოწყობა და გამწვანება',
     'services.planting.checklist.1': 'ნიადაგის მომზადება და ნოყიერი მიწის შეტანა/გაშლა.',
     'services.planting.checklist.2': 'მსუბუქი კონსტრუქციების მონტაჟი (ბილიკები, კიბეები, პერგოლები, ქოთნები და სხვა).',
-    'services.planting.checklist.3': 'სადრენაჟ სისტემების მოწყობა.',
+    'services.planting.checklist.3': 'სადრენაჟე სისტემების მოწყობა.',
     'services.planting.checklist.4': 'ავტომატიზირებული სარწყავი სისტემების ინსტალაცია.',
     'services.planting.checklist.5': 'მცენარეების დარგვა და გამაგრებითი სამუშაოები.',
     'services.planting.checklist.6': 'ბალახის დაგება და მწვანე საფარის მოწყობა.',
@@ -146,8 +146,7 @@ const translations = {
     'nav.contact': 'Contact',
 
     // Hero Section
-    'hero.mission.title': 'Greenscape — Harmony Begins at Home.',
-    'hero.mission.subtitle': 'Where nature becomes a source of calm and balance.',
+    'hero.mission.title': 'Greenscape  In harmony with nature',
     'hero.cta.learn': 'Learn More About Us',
     'hero.cta.contact': 'Contact Us Today',
 
@@ -172,6 +171,7 @@ const translations = {
     'services.showroom.bullets.3': 'Potted and well-rooted seedlings.',
     'services.showroom.bullets.4': 'Imported and locally grown plants.',
     'services.showroom.bullets.5': 'Affordable prices and guaranteed quality.',
+    'services.showroom.catalogue': 'Catalogue',
 
     'services.design.title': 'Landscape Design',
     'services.design.text': 'We create landscape designs tailored to your taste, taking into account both aesthetics and functionality. With modern 3D visualization, you can preview how your space will transform — from concept to a completed garden.',

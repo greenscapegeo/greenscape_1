@@ -30,7 +30,7 @@ export default function Why() {
 
   return (
     <div className="container why">
-      <h3>{t('why.title')} {t('brand.name')}?</h3>
+      <h3>{t('why.title')}</h3>
       <div className="grid four cards">
         {whyItems.map((w, i) => (
           <article className="card" key={i}>
